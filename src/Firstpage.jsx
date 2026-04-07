@@ -1,40 +1,52 @@
-import { useState } from "react";
-import Flaverlist from "./Componets/Flaverlist";
+import { useState, useRef, useEffect } from "react";
+import Flaverlist from  "./Componets/Flaverlist";
 import Candlecreat from "./Componets/Candlecreat";
+
+import { getRecipeFromChefClaude } from './ai.js'
+
 
 export default function Firstpage() {
 
-const [flavor, setFlavor] = useState(["Vanilla", "Lavender", "Rose", "Sandalwood", "Jasmine"]);
+const [flavor, setFlavor] = useState(["Soy Wax",
+  "Cotton Wick (medium size)",
+  "Fragrance Oil (Lavender or Vanilla)", "Glass Jar"]);
 
+const [recipe, setRecipe] = useState("");
 
+const recipeSection = useRef(null);
+useEffect(() => {
+        if (recipe !== "" && recipeSection.current !== null) {
+            recipeSection.current.scrollIntoView({behavior: "smooth"})
+        }
+    }, [recipe])
 
-const [recipeShown, setRecipeShown] = useState(false);
-
+  async function getRecipe() {
+        const recipeMarkdown = await getRecipeFromChefClaude(flavor)
+        setRecipe(recipeMarkdown)
+    }
 
 function addFlavor(formData){
     const newFlaver = formData.get("flavor")
     setFlavor(prevFlavor => [...prevFlavor, newFlaver])
-
-}
-
-function toggleCandle(){
-    setRecipeShown(prevState => !prevState)
+ 
 }
 
 
     return(
         <>
         <form action={addFlavor} className="add-ingredient-form">
-            <input type="text" placeholder="Enter candle scent flavor" aria-label='Add flaver' name="flavor" />
-            <button type="submit"> Add</button>
+            <input type="text" placeholder="Add your must-haves" aria-label='Add flaver' name="flavor" />
+            <button> Add</button>
          </form>
 
-              {flavor.length > 0 && <Flaverlist 
+              {flavor.length > 0 && 
+              <Flaverlist 
+              ref={recipeSection}
               flavor={flavor} 
-              toggleCandle={toggleCandle}
+              getRecipe={getRecipe}
               /> }
 
-            {recipeShown && <Candlecreat/> }
+            {recipe && <Candlecreat recipe={recipe} /> }
 
         </>
 
