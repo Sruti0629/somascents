@@ -7,16 +7,16 @@ const flavorList = props.flavor.map(items => {
 
     return(
         <section>
-                <h2>Choose Your Fragrances</h2>
+                <h2>Candle Making Materials List</h2>
                 <ul className="ingredients-list flovorstyle" aria-live="polite">{flavorList}</ul>
                 {props.flavor.length > 3 && <div className="get-recipe-container">
-                    <div>
+                    <div ref={props.ref}>
                         <h3>Let’s Make Something Cozy</h3>
-                        <p>Pick your scents and we’ll help you turn them into a beautiful candle.</p>
+                        <p>Pick your materials and we’ll help you turn them into a beautiful candle.</p>
                     </div>
-                    <button onClick={props.toggleCandle}>Start Creating</button> 
+                    <button onClick={props.getRecipe}>Start Creating</button> 
                 </div>}
-            </section>
+            </section> 
         )
 }  
 
